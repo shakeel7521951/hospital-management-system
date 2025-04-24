@@ -27,12 +27,35 @@ import UpdatePassword from './pages/UpdatePassword'
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
+import Sidebar from "./components/dashboard/common/Sidebar";
+import AdminRoute from "./middleWares/AdminRoute";
+import OverviewPage from "./pages/dashboard/OverviewPage";
+import ProductsPage from "./pages/dashboard/ProductsPage";
+import UsersPage from "./pages/dashboard/UsersPage";
+// import ScrollToTop from "./components/ScrollToTop";
+
 const MainLayout = () => {
   return (
     <>
       <Navbar />
       <Outlet />
       <Footer />
+    </>
+  );
+};
+
+const AdminLayout = () => {
+  return (
+    <>
+      <div className="flex h-screen  text-blue-700 overflow-hidden">
+        <div className="fixed inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-br bg-white text-blue-700" />
+          <div className="absolute inset-0 backdrop-blur-sm" />
+        </div>
+        {/* <ScrollToTop /> */}
+        <Sidebar />
+        <Outlet />
+      </div>
     </>
   );
 };
@@ -66,6 +89,22 @@ const router = createBrowserRouter([
   { path: "/user-verification", element: <VerifyUser /> },
   { path: "/forgot-passoword", element: <ForgotPassword /> },
   { path: "/reset-password", element: <ResetPassword /> },
+
+  {
+    element: <AdminRoute />,
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
+          { path: "/dashboard", element: <OverviewPage /> },
+          { path: "/products", element: <ProductsPage /> },
+          { path: "/users", element: <UsersPage /> },
+          // { path: "/sales", element: <SalesPage /> },
+          // { path: "/orders", element: <OrdersPage /> },
+        ],
+      },
+    ],
+  },
 ]);
 
 function App() {
