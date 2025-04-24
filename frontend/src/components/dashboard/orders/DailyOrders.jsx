@@ -9,15 +9,24 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { useGetAllOrdersQuery } from "../../../redux/slices/OrderSlices";
 
-// Function to format date as "MM/DD"
+// 🧪 Mock orders
+const mockOrders = [
+  { _id: "1", createdAt: "2025-04-01" },
+  { _id: "2", createdAt: "2025-04-01" },
+  { _id: "3", createdAt: "2025-04-02" },
+  { _id: "4", createdAt: "2025-04-03" },
+  { _id: "5", createdAt: "2025-04-03" },
+  { _id: "6", createdAt: "2025-04-03" },
+];
+
+// Format date as MM/DD
 const formatDate = (dateStr) => {
   const date = new Date(dateStr);
   return `${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`;
 };
 
-// Function to group orders by date
+// Group by date
 const getDailyOrdersData = (orders) => {
   const dailyCounts = orders.reduce((acc, order) => {
     const dateKey = formatDate(order.createdAt);
@@ -28,11 +37,7 @@ const getDailyOrdersData = (orders) => {
   return Object.entries(dailyCounts).map(([date, count]) => ({ date, orders: count }));
 };
 
-const DailyOrders = () => {
-  const { data, isLoading } = useGetAllOrdersQuery();
-  const orders = Array.isArray(data?.orders) ? data.orders : [];
-
-  // Dynamically generate daily orders data
+const DailyOrders = ({ orders = mockOrders }) => {
   const dailyOrdersData = getDailyOrdersData(orders);
 
   return (
@@ -48,8 +53,8 @@ const DailyOrders = () => {
         <ResponsiveContainer>
           <LineChart data={dailyOrdersData}>
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis dataKey="date" stroke="" />
-            <YAxis stroke="" />
+            <XAxis dataKey="date" stroke="#4B5563" />
+            <YAxis stroke="#4B5563" />
             <Tooltip
               contentStyle={{
                 backgroundColor: "rgba(31, 41, 55, 0.8)",

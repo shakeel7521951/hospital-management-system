@@ -1,12 +1,41 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, Eye } from "lucide-react";
-import { useGetAllOrdersQuery } from "../../../redux/slices/OrderSlices";
 import OrderDetailModal from "./OrderDetailModel";
 
+// 🔧 Static Orders Data
+const staticOrders = [
+  {
+    _id: "1",
+    customerId: { name: "Alice Johnson", email: "alice@example.com" },
+    price: 120.5,
+    orderStatus: "Pending",
+    createdAt: "2025-04-21T10:00:00Z",
+    pickupLocation: "Downtown",
+    dropoffLocation: "Airport",
+  },
+  {
+    _id: "2",
+    customerId: { name: "Bob Smith", email: "bob@example.com" },
+    price: 89.99,
+    orderStatus: "Fulfilled",
+    createdAt: "2025-04-20T15:30:00Z",
+    pickupLocation: "City Center",
+    dropoffLocation: "Uptown",
+  },
+  {
+    _id: "3",
+    customerId: { name: "Carol Davis", email: "carol@example.com" },
+    price: 55.0,
+    orderStatus: "Shipped",
+    createdAt: "2025-04-19T08:45:00Z",
+    pickupLocation: "East Side",
+    dropoffLocation: "West Side",
+  },
+];
+
 const OrdersTable = () => {
-  const { data, isLoading } = useGetAllOrdersQuery();
-  const orders = Array.isArray(data?.orders) ? data.orders : [];
+  const orders = staticOrders;
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredOrders, setFilteredOrders] = useState([]);
   const [showDetailModel, setShowDetailModel] = useState(false);
@@ -14,7 +43,7 @@ const OrdersTable = () => {
 
   useEffect(() => {
     setFilteredOrders(orders);
-  }, [orders]);
+  }, []);
 
   const handleSearch = (e) => {
     const term = e.target.value.toLowerCase();
@@ -36,10 +65,6 @@ const OrdersTable = () => {
     setShowDetailModel(false);
     setSelectedOrder(null);
   };
-
-  if (isLoading) {
-    return <div className="text-blue-700">Loading orders...</div>;
-  }
 
   return (
     <motion.div
@@ -66,34 +91,27 @@ const OrdersTable = () => {
         <table className="min-w-full divide-y divide-gray-700">
           <thead>
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                Customer Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                Customer Email
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                Total
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                Date
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                Pickup Location
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                Dropoff Location
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider">
-                Actions
-              </th>
+              {[
+                "Customer Name",
+                "Customer Email",
+                "Total",
+                "Status",
+                "Date",
+                "Pickup Location",
+                "Dropoff Location",
+                "Actions",
+              ].map((heading, idx) => (
+                <th
+                  key={idx}
+                  className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase tracking-wider"
+                >
+                  {heading}
+                </th>
+              ))}
             </tr>
           </thead>
 
-          <tbody className="divide divide-gray-700">
+          <tbody className="divide-y divide-gray-300">
             {filteredOrders.map((order) => (
               <motion.tr
                 key={order._id}
@@ -101,16 +119,16 @@ const OrdersTable = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
+                <td className="px-6 py-4 text-sm font-medium text-black">
                   {order.customerId?.name || "N/A"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
-                    {order.customerId?.email || "N/A"}
-                  </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
-                  ${order.price ? order.price.toFixed(2) : "0.00"}
+                <td className="px-6 py-4 text-sm text-black">
+                  {order.customerId?.email || "N/A"}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-500">
+                <td className="px-6 py-4 text-sm text-black">
+                  ${order.price?.toFixed(2)}
+                </td>
+                <td className="px-6 py-4 text-sm">
                   <span
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                       order.orderStatus === "Fulfilled"
@@ -125,19 +143,19 @@ const OrdersTable = () => {
                     {order.orderStatus}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700">
+                <td className="px-6 py-4 text-sm text-blue-700">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700">
-                  {order.pickupLocation ? order.pickupLocation : ""}
+                <td className="px-6 py-4 text-sm text-blue-700">
+                  {order.pickupLocation || ""}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700">
-                  {order.dropoffLocation ? order.dropoffLocation : ""}
+                <td className="px-6 py-4 text-sm text-blue-700">
+                  {order.dropoffLocation || ""}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700">
+                <td className="px-6 py-4 text-sm text-blue-700">
                   <button
                     onClick={() => openModal(order)}
-                    className="text-indigo-400 cursor-pointer hover:text-indigo-300 mr-2"
+                    className="text-indigo-400 hover:text-indigo-300"
                   >
                     <Eye size={18} />
                   </button>

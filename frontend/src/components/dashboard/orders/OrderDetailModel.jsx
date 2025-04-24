@@ -1,59 +1,65 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useGetAllOrdersQuery, useUpdateOrderStatusMutation } from "../../../redux/slices/OrderSlices";
 import { toast } from "react-toastify";
 
-const OrderDetailModal = ({ order, onClose }) => {
-  const [status, setStatus] = useState(order.orderStatus);
-  const [updateOrderStatus, { isLoading }] = useUpdateOrderStatusMutation();
-  const { refetch } = useGetAllOrdersQuery();
+// Static Order Data for Testing
+const staticOrder = {
+  _id: "1",
+  customerId: {
+    name: "Alice Johnson",
+    email: "alice@example.com",
+  },
+  price: 120.5,
+  orderStatus: "Pending",
+  createdAt: "2025-04-21T10:00:00Z",
+  pickupLocation: "Downtown",
+  dropoffLocation: "Airport",
+};
+
+const OrderDetailModal = ({ onClose }) => {
+  const [status, setStatus] = useState(staticOrder.orderStatus);
+
   const handleStatusChange = async () => {
     try {
-      await updateOrderStatus({
-        orderId: order._id,
-        newStatus: status,
-      }).unwrap();
+      // Simulate successful status update
       toast.success("Order status updated successfully");
-        refetch();
       onClose();
     } catch (error) {
-      toast.error(error?.data?.message || "Failed to update order status");
+      toast.error(error?.message || "Failed to update order status");
     }
   };
 
   return (
     <motion.div
-      className="fixed inset-0 bg-[#21202067] bg-opacity-50 flex justify-center items-center p-4 rounded-xl "
+      className="fixed inset-0 bg-[#21202067] bg-opacity-50 flex justify-center items-center p-4 rounded-xl"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg">
-        <h2 className="text-xl font-semibold text-blue-700 mb-4">
-          Order Details
-        </h2>
+        <h2 className="text-xl font-semibold text-blue-700 mb-4">Order Details</h2>
 
         <div className="space-y-2">
           <p>
-            <strong>Order ID:</strong> {order._id}
+            <strong>Order ID:</strong> {staticOrder._id}
           </p>
           <p>
-            <strong>Customer:</strong> {order.customerId?.name}
+            <strong>Customer:</strong> {staticOrder.customerId?.name}
           </p>
           <p>
-            <strong>Email:</strong> {order.customerId?.email}
+            <strong>Email:</strong> {staticOrder.customerId?.email}
           </p>
           <p>
-            <strong>Total Price:</strong> ${order.price.toFixed(2)}
+            <strong>Total Price:</strong> ${staticOrder.price.toFixed(2)}
           </p>
           <p>
-            <strong>Pickup Location:</strong> {order.pickupLocation}
+            <strong>Pickup Location:</strong> {staticOrder.pickupLocation}
           </p>
           <p>
-            <strong>Dropoff Location:</strong> {order.dropoffLocation}
+            <strong>Dropoff Location:</strong> {staticOrder.dropoffLocation}
           </p>
           <p>
             <strong>Date:</strong>{" "}
-            {new Date(order.createdAt).toLocaleDateString()}
+            {new Date(staticOrder.createdAt).toLocaleDateString()}
           </p>
         </div>
 
@@ -82,11 +88,11 @@ const OrderDetailModal = ({ order, onClose }) => {
           <button
             onClick={handleStatusChange}
             className={`px-4 py-2 text-white rounded-lg cursor-pointer ${
-              isLoading ? "bg-gray-400" : "bg-blue-600"
+              false ? "bg-gray-400" : "bg-blue-600"
             }`}
-            disabled={isLoading}
+            disabled={false}
           >
-            {isLoading ? "Updating..." : "Save"}
+            Save
           </button>
         </div>
       </div>

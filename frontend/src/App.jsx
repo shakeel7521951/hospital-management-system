@@ -32,6 +32,8 @@ import AdminRoute from "./middleWares/AdminRoute";
 import OverviewPage from "./pages/dashboard/OverviewPage";
 import ProductsPage from "./pages/dashboard/ProductsPage";
 import UsersPage from "./pages/dashboard/UsersPage";
+import SalesPage from "./pages/dashboard/SalesPage";
+import OrdersPage from "./pages/dashboard/OrdersPage";
 // import ScrollToTop from "./components/ScrollToTop";
 
 const MainLayout = () => {
@@ -97,10 +99,10 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { path: "/dashboard", element: <OverviewPage /> },
-          { path: "/products", element: <ProductsPage /> },
+          { path: "/doctors", element: <ProductsPage /> },
           { path: "/users", element: <UsersPage /> },
-          // { path: "/sales", element: <SalesPage /> },
-          // { path: "/orders", element: <OrdersPage /> },
+          { path: "/sales", element: <SalesPage /> },
+          { path: "/orders", element: <OrdersPage /> },
         ],
       },
     ],

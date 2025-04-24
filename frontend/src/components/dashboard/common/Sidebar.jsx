@@ -8,6 +8,7 @@ import {
   Users,
   Car,
 } from "lucide-react";
+import { FaUserDoctor } from "react-icons/fa6";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -19,7 +20,7 @@ const SIDEBAR_ITEMS = [
     color: "#6366f1",
     href: "/dashboard",
   },
-  { name: "Cars", icon: Car, color: "#8B5CF6", href: "/products" },
+  { name: "Doctors", icon: FaUserDoctor, color: "#8B5CF6", href: "/doctors" },
   { name: "Users", icon: Users, color: "#EC4899", href: "/users" },
   { name: "Sales", icon: DollarSign, color: "#10B981", href: "/sales" },
   { name: "Orders", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
