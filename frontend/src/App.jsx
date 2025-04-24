@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import "./App.css";
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import Contact from "./pages/Contact";
@@ -17,6 +17,15 @@ import Xray from "./pages/departments/Xray";
 import Neurology from "./pages/departments/Neurology";
 import Pediatrics from "./pages/departments/Pediatrics";
 import Dental from "./pages/departments/Dental";
+import { useDispatch } from "react-redux";
+import { useProfileQuery } from "./redux/slices/UserApi";
+import { useEffect } from "react";
+import { clearProfile, setProfile } from "./redux/slices/UserSlice";
+import VerifyUser from "./pages/VerifyUser";
+import MyProfile from "./pages/MyProfile";
+import UpdatePassword from './pages/UpdatePassword'
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 const MainLayout = () => {
   return (
@@ -47,13 +56,30 @@ const router = createBrowserRouter([
       { path: "/neurology", element: <Neurology /> },
       { path: "/pediatrics", element: <Pediatrics /> },
       { path: "/dental", element: <Dental /> },
+
+      { path: "/profile", element: <MyProfile /> },
+      { path: "/update-password", element: <UpdatePassword /> },
     ],
   },
-  {path:'/login',element:<LoginForm />},
-  {path:'/sign-up',element:<SignupForm />},
+  { path: "/login", element: <LoginForm /> },
+  { path: "/sign-up", element: <SignupForm /> },
+  { path: "/user-verification", element: <VerifyUser /> },
+  { path: "/forgot-passoword", element: <ForgotPassword /> },
+  { path: "/reset-password", element: <ResetPassword /> },
 ]);
 
 function App() {
+  const dispatch = useDispatch();
+  const { data: profileData } = useProfileQuery();
+
+  useEffect(() => {
+    if (profileData) {
+      dispatch(setProfile(profileData.user));
+    } else {
+      dispatch(clearProfile());
+    }
+  }, [profileData, dispatch]);
+
   return <RouterProvider router={router} />;
 }
 

@@ -1,6 +1,6 @@
 // import User from "../models/User.js";
-import User from '../Models/User.js'
-import sendMail from '../middleware/SendMail.js'
+import User from "../Models/User.js";
+import sendMail from "../middleware/SendMail.js";
 
 export const register = async (req, res) => {
   try {
@@ -30,7 +30,10 @@ export const register = async (req, res) => {
 
     res
       .status(201)
-      .json({ message: "OTP sent to email. Verify your account." });
+      .json({
+        message: "OTP sent to email. Verify your account.",
+        success: true,
+      });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -56,7 +59,9 @@ export const verifyUser = async (req, res) => {
     const token = user.generateToken();
     res.cookie("token", token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
 
-    res.status(200).json({ message: "User verified successfully" });
+    res
+      .status(200)
+      .json({ message: "User verified successfully", success: true });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -216,9 +221,14 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid email or password" });
 
     const token = user.generateToken();
-    res.cookie("token", token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 60 * 60 * 1000,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
 
-    res.status(200).json({ message: "Login successful", user });
+    res.status(200).json({ message: "Login successful", success: true, user });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
