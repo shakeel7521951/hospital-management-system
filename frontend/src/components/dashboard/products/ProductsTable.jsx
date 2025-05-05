@@ -1,76 +1,51 @@
 import { motion } from "framer-motion";
 import { Edit, Search, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AlertDialog from "../alert/AlertDialog";
 import AddProduct from "../popup/Add";
 import UpdateService from "./UpdateProduct";
 import { toast } from "react-toastify";
+import { useGetDoctorsQuery, useDeleteDoctorMutation } from "../../../redux/slices/DoctorApi";
 
-// ✅ Static services data
-const staticServices = [
-  {
-    _id: "1",
-    serviceName: "Toyota Camry",
-    serviceCategory: "Sedan",
-    price: 25000,
-    passengers: 5,
-    servicePic: "https://via.placeholder.com/50",
-    sales: 120,
-    stock: 10,
-  },
-  {
-    _id: "2",
-    serviceName: "Honda Accord",
-    serviceCategory: "Sedan",
-    price: 23000,
-    passengers: 5,
-    servicePic: "https://via.placeholder.com/50",
-    sales: 95,
-    stock: 3,
-  },
-  {
-    _id: "3",
-    serviceName: "Tesla Model 3",
-    serviceCategory: "Electric",
-    price: 40000,
-    passengers: 5,
-    servicePic: "https://via.placeholder.com/50",
-    sales: 180,
-    stock: 5,
-  },
-];
-
+// ... (Imports stay the same)
 const ProductsTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [addProductOpen, setAddProductOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [servicesList, setServicesList] = useState(staticServices);
   const [isOpenUpdate, setOpenUpdate] = useState(false);
+
+  const { data, isLoading, isError, refetch } = useGetDoctorsQuery();
+  const [deleteDoctor] = useDeleteDoctorMutation();
+
+  useEffect(() => {
+    if (!data) refetch();
+  }, [data, refetch]);
+
+  const doctors = data?.doctors ?? [];
+  const filteredDoctors = doctors.filter(
+    (doc) =>
+      doc.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      doc.speciality?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleDelete = () => {
     if (!selectedProduct) return;
-
-    setServicesList((prev) =>
-      prev.filter((service) => service._id !== selectedProduct._id)
-    );
-
-    toast.success("Service deleted successfully", { position: "top-center" });
-
-    setDialogOpen(false);
-    setSelectedProduct(null);
+    deleteDoctor(selectedProduct._id)
+      .then(() => {
+        toast.success("Doctor deleted successfully", { position: "top-center" });
+        setDialogOpen(false);
+        setSelectedProduct(null);
+      })
+      .catch(() => {
+        toast.error("Failed to delete doctor", { position: "top-center" });
+      });
   };
 
-  const handleUpdate = (service) => {
-    setSelectedProduct(service);
+  const handleUpdate = (doctor) => {
+    setSelectedProduct(doctor);
     setOpenUpdate(true);
   };
-
-  const filteredProducts = servicesList.filter(
-    (service) =>
-      service.serviceName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      service.serviceCategory.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   return (
     <>
@@ -79,23 +54,23 @@ const ProductsTable = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         onClick={() => setAddProductOpen(true)}
-        className="px-4 py-2 mb-10 bg-blue-700 cursor-pointer text-white rounded-lg hover:bg-blue-500 transition"
+        className="px-4 py-2 mb-10 bg-blue-700 text-white rounded-lg hover:bg-blue-500 transition"
       >
-        + Add New Service
+        + Add New Doctor
       </motion.button>
 
       <motion.div
-        className="bg-white backdrop-blur-md shadow-lg rounded-xl p-6 border border-blue-700 mb-8"
+        className="bg-white shadow-lg rounded-xl p-6 border border-blue-700 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
       >
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-blue-700">Cars List</h2>
+          <h2 className="text-xl font-semibold text-blue-700">Doctors List</h2>
           <div className="relative">
             <input
               type="text"
-              placeholder="Search cars..."
+              placeholder="Search doctors..."
               className="bg-white text-blue-700 placeholder-blue-700 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               onChange={(e) => setSearchTerm(e.target.value)}
               value={searchTerm}
@@ -104,48 +79,64 @@ const ProductsTable = () => {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          {filteredProducts.length > 0 ? (
-            <table className="min-w-full divide-y divide-gray-700">
+        {isLoading ? (
+          <p className="text-center py-4 text-gray-500">Loading doctors...</p>
+        ) : isError ? (
+          <p className="text-center py-4 text-red-500">Failed to load doctors. Please try again.</p>
+        ) : filteredDoctors.length > 0 ? (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-700 text-sm">
               <thead>
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase">Category</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase">Price</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase">Passengers</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-blue-700 uppercase">Actions</th>
+                  <th className="px-4 text-nowrap py-2 text-left text-blue-700 uppercase">Photo & Name</th>
+                  <th className="px-4 text-nowrap py-2 text-left text-blue-700 uppercase">Speciality</th>
+                  <th className="px-4 text-nowrap py-2 text-left text-blue-700 uppercase">Email</th>
+                  <th className="px-4 text-nowrap py-2 text-left text-blue-700 uppercase">Phone</th>
+                  <th className="px-4 text-nowrap py-2 text-left text-blue-700 uppercase">Experience</th>
+                  <th className="px-4 text-nowrap py-2 text-left text-blue-700 uppercase">Education</th>
+                  <th className="px-4 text-nowrap py-2 text-left text-blue-700 uppercase">Available Days</th>
+                  <th className="px-4 text-nowrap py-2 text-left text-blue-700 uppercase">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-700">
-                {filteredProducts.map((service) => (
+              <tbody className="divide-y divide-gray-300">
+                {filteredDoctors.map((doctor) => (
                   <motion.tr
-                    key={service._id}
+                    key={doctor._id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
                   >
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-700 flex gap-2 items-center">
+                    <td className="px-4 py-2 flex items-center gap-2 text-blue-700">
                       <img
-                        src={service.servicePic || "https://via.placeholder.com/50"}
-                        alt={service.serviceName}
+                        src={doctor.doctorImage || "https://via.placeholder.com/50"}
+                        alt={doctor.name}
                         className="size-10 rounded-full"
                       />
-                      {service.serviceName}
+                      {doctor.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700">{service.serviceCategory}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700">${service.price}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700">{service.passengers}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-blue-700">
+                    <td className="px-4 py-2 text-nowrap text-blue-700">{doctor.speciality}</td>
+                    <td className="px-4 py-2 text-blue-700">{doctor.email}</td>
+                    <td className="px-4 py-2 text-blue-700">{doctor.phone}</td>
+                    <td className="px-4 py-2 text-blue-700">
+                      {doctor.experience} {doctor.experience === 1 ? "year" : "years"}
+                    </td>
+                    <td className="px-4 py-2 text-blue-700">{doctor.education || "-"}</td>
+                    <td className="px-4 py-2 text-blue-700">
+                      {doctor.availableDays?.length > 0
+                        ? doctor.availableDays.join(", ")
+                        : "-"}
+                    </td>
+                    <td className="px-4 py-2 text-blue-700">
                       <button
-                        className="text-indigo-500 cursor-pointer hover:text-indigo-300 mr-2"
-                        onClick={() => handleUpdate(service)}
+                        className="text-indigo-500 hover:text-indigo-300 mr-2"
+                        onClick={() => handleUpdate(doctor)}
                       >
                         <Edit size={18} />
                       </button>
                       <button
-                        className="text-red-500 cursor-pointer hover:text-red-300"
+                        className="text-red-500 hover:text-red-300"
                         onClick={() => {
-                          setSelectedProduct(service);
+                          setSelectedProduct(doctor);
                           setDialogOpen(true);
                         }}
                       >
@@ -156,15 +147,26 @@ const ProductsTable = () => {
                 ))}
               </tbody>
             </table>
-          ) : (
-            <p className="text-center text-gray-500 py-4">No services found.</p>
-          )}
-        </div>
+          </div>
+        ) : (
+          <p className="text-center py-4 text-gray-500">No doctors found.</p>
+        )}
       </motion.div>
 
-      <UpdateService isOpen={isOpenUpdate} onClose={() => setOpenUpdate(false)} serviceData={selectedProduct} />
-      <AddProduct isOpen={addProductOpen} onClose={() => setAddProductOpen(false)} />
-      <AlertDialog isOpen={dialogOpen} onClose={() => setDialogOpen(false)} onConfirm={handleDelete} />
+      <UpdateService
+        isOpen={isOpenUpdate}
+        onClose={() => setOpenUpdate(false)}
+        serviceData={selectedProduct}
+      />
+      <AddProduct
+        isOpen={addProductOpen}
+        onClose={() => setAddProductOpen(false)}
+      />
+      <AlertDialog
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={handleDelete}
+      />
     </>
   );
 };

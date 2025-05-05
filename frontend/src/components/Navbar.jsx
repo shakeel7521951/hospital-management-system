@@ -59,7 +59,7 @@ const Navbar = () => {
           <div className="hidden md:flex items-center gap-4 relative">
             {userProfile ? (
               <>
-                <Link to="/appointment" className="mt-1">
+                <Link to="/appointments" className="mt-1">
                   <Button text="Make an Appointment" />
                 </Link>
                 <div

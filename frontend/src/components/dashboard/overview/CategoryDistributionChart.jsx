@@ -7,24 +7,17 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
+import { useGetDoctorsQuery } from "../../../redux/slices/DoctorApi";
 
 // Define Colors
 const COLORS = ["#6366F1", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B"];
 
-// Mock static services data
-const services = [
-  { id: 1, serviceName: "Oil Change" },
-  { id: 2, serviceName: "Tire Rotation" },
-  { id: 3, serviceName: "Brake Inspection" },
-  { id: 4, serviceName: "Oil Change" },
-  { id: 5, serviceName: "Battery Check" },
-  { id: 6, serviceName: "Tire Rotation" },
-];
+// Count services by speciality
+const getCategoryData = (doctors) => {
+  if (!Array.isArray(doctors)) return [];
 
-// Function to count occurrences of Services
-const getCategoryData = (services) => {
-  const categoryCounts = services.reduce((acc, service) => {
-    const category = service.serviceName || "Unknown";
+  const categoryCounts = doctors.reduce((acc, doctor) => {
+    const category = doctor.speciality || "Unknown";
     acc[category] = (acc[category] || 0) + 1;
     return acc;
   }, {});
@@ -32,10 +25,16 @@ const getCategoryData = (services) => {
   return Object.entries(categoryCounts).map(([name, value]) => ({ name, value }));
 };
 
-// Generate chart data from static services
-const categoryData = getCategoryData(services);
-
 const CategoryDistributionChart = () => {
+  // Fetch data using the custom hook
+  const { data, isLoading, error } = useGetDoctorsQuery();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
+
+  // Get category data based on the doctors fetched
+  const categoryData = getCategoryData(data?.doctors || []);
+
   return (
     <motion.div
       className="bg-white bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-blue-700"
@@ -43,7 +42,7 @@ const CategoryDistributionChart = () => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
     >
-      <h2 className="text-lg font-medium mb-4 text-blue-700">Service Category Distribution</h2>
+      <h2 className="text-lg font-medium mb-4 text-blue-700">Speciality Distribution</h2>
       <div className="h-80">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>

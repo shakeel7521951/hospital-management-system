@@ -23,7 +23,7 @@ import { useEffect } from "react";
 import { clearProfile, setProfile } from "./redux/slices/UserSlice";
 import VerifyUser from "./pages/VerifyUser";
 import MyProfile from "./pages/MyProfile";
-import UpdatePassword from './pages/UpdatePassword'
+import UpdatePassword from "./pages/UpdatePassword";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
@@ -34,6 +34,7 @@ import ProductsPage from "./pages/dashboard/ProductsPage";
 import UsersPage from "./pages/dashboard/UsersPage";
 import SalesPage from "./pages/dashboard/SalesPage";
 import OrdersPage from "./pages/dashboard/OrdersPage";
+import Appointment from "./pages/Appointment";
 // import ScrollToTop from "./components/ScrollToTop";
 
 const MainLayout = () => {
@@ -91,6 +92,7 @@ const router = createBrowserRouter([
   { path: "/user-verification", element: <VerifyUser /> },
   { path: "/forgot-passoword", element: <ForgotPassword /> },
   { path: "/reset-password", element: <ResetPassword /> },
+  { path: "/appointments", element: <Appointment /> },
 
   {
     element: <AdminRoute />,
@@ -99,7 +101,7 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { path: "/dashboard", element: <OverviewPage /> },
-          { path: "/doctors", element: <ProductsPage /> },
+          { path: "/admin-doctors", element: <ProductsPage /> },
           { path: "/users", element: <UsersPage /> },
           { path: "/sales", element: <SalesPage /> },
           { path: "/orders", element: <OrdersPage /> },

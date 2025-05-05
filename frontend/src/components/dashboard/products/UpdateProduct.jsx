@@ -1,30 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { toast } from "react-toastify";
+import { useEditDoctorMutation } from "../../../redux/slices/DoctorApi";
 
 const UpdateService = ({ isOpen, onClose, serviceData, onUpdate }) => {
   const [product, setProduct] = useState({
-    serviceName: "",
-    serviceCategory: "",
-    price: "",
-    passengers: "",
-    doors: "",
-    servicePic: null,
+    name: "",
+    email: "",
+    phone: "",
+    speciality: "",
+    experience: "",
+    education: "",
+    workingDays: [],
+    doctorImage: null,
   });
 
   const [imagePreview, setImagePreview] = useState(null);
 
+  const [updateService, { isLoading }] = useEditDoctorMutation();
+
   useEffect(() => {
     if (serviceData) {
       setProduct({
-        serviceName: serviceData.serviceName || "",
-        serviceCategory: serviceData.serviceCategory || "",
-        price: serviceData.price || "",
-        passengers: serviceData.passengers || "",
-        doors: serviceData.doors || "",
-        servicePic: null,
+        name: serviceData.name || "",
+        email: serviceData.email || "",
+        phone: serviceData.phone || "",
+        speciality: serviceData.speciality || "",
+        experience: serviceData.experience || "",
+        education: serviceData.education || "",
+        workingDays: serviceData.workingDays || [],
+        doctorImage: null,
       });
-      setImagePreview(serviceData.servicePic || null);
+      setImagePreview(serviceData.doctorImage || null);
     }
   }, [serviceData]);
 
@@ -44,34 +51,56 @@ const UpdateService = ({ isOpen, onClose, serviceData, onUpdate }) => {
     const { name, value } = e.target;
     setProduct((prev) => ({ ...prev, [name]: value }));
   };
+  // console.log("working.......",workingDays)
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setProduct((prev) => ({ ...prev, servicePic: file }));
+      setProduct((prev) => ({ ...prev, doctorImage: file }));
       setImagePreview(URL.createObjectURL(file));
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleWorkingDayChange = (day) => {
+    setProduct((prev) => {
+      const updatedDays = prev.workingDays.includes(day)
+        ? prev.workingDays.filter((d) => d !== day)
+        : [...prev.workingDays, day];
+      return { ...prev, workingDays: updatedDays };
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simulate local update
     const updatedProduct = {
       ...serviceData,
       ...product,
-      servicePic: imagePreview,
+      doctorImage: imagePreview,
     };
 
-    console.log("Updated service:", updatedProduct);
-    toast.success("Service updated (mock)!", { position: "top-center" });
+    try {
+      const formData = new FormData();
+      formData.append("name", updatedProduct.name);
+      formData.append("email", updatedProduct.email);
+      formData.append("phone", updatedProduct.phone);
+      formData.append("speciality", updatedProduct.speciality);
+      formData.append("experience", updatedProduct.experience);
+      formData.append("education", updatedProduct.education);
+      formData.append("availableDays", JSON.stringify(updatedProduct.workingDays));
+      if (updatedProduct.doctorImage instanceof File) {
+        formData.append("doctorImage", updatedProduct.doctorImage);
+      }
 
-    // Optional: Notify parent to update its state
-    if (onUpdate) {
-      onUpdate(updatedProduct);
+      await updateService({ id: serviceData._id, data: formData }).unwrap();
+
+      toast.success("Doctor profile updated successfully!", { position: "top-center" });
+      if (onUpdate) onUpdate(updatedProduct);
+      onClose();
+    } catch (err) {
+      console.error("Error updating profile:", err);
+      toast.error("Failed to update profile.", { position: "top-center" });
     }
-
-    onClose();
   };
 
   return (
@@ -98,17 +127,19 @@ const UpdateService = ({ isOpen, onClose, serviceData, onUpdate }) => {
           ❌
         </button>
 
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Update Service</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-gray-800">
+          Update Doctor Profile
+        </h2>
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4">
-            {["serviceName", "serviceCategory", "price", "passengers", "doors"].map((field, index) => (
+            {["name", "email", "phone", "speciality", "experience", "education"].map((field, index) => (
               <div key={index} className="mb-3">
                 <label className="block text-sm font-medium text-gray-700 capitalize">
-                  {field.replace("service", "Service")}:
+                  {field.charAt(0).toUpperCase() + field.slice(1)}:
                 </label>
                 <input
-                  type={["price", "passengers", "doors"].includes(field) ? "number" : "text"}
+                  type={field === "email" ? "email" : "text"}
                   name={field}
                   value={product[field]}
                   onChange={handleChange}
@@ -117,12 +148,35 @@ const UpdateService = ({ isOpen, onClose, serviceData, onUpdate }) => {
                 />
               </div>
             ))}
+
+            {/* Working Days */}
+            <div className="mb-3 col-span-2">
+              <label className="block text-sm font-medium text-gray-700">Working Days:</label>
+              <div className="flex flex-wrap gap-3 mt-2">
+                {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
+                  <label key={day} className="flex items-center gap-1">
+                    <input
+                      type="checkbox"
+                      checked={product.workingDays.includes(day)}
+                      onChange={() => handleWorkingDayChange(day)}
+                      className="accent-blue-600"
+                    />
+                    {day}
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
 
+          {/* Image Upload */}
           <div className="flex items-center gap-4 mt-4">
             <div className="w-32 h-32 border border-gray-300 rounded-lg overflow-hidden">
               {imagePreview ? (
-                <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                <img
+                  src={imagePreview}
+                  alt="Preview"
+                  className="w-full h-full object-cover"
+                />
               ) : (
                 <div className="flex items-center justify-center w-full h-full bg-gray-100 text-gray-400 text-sm">
                   No Image
@@ -130,7 +184,9 @@ const UpdateService = ({ isOpen, onClose, serviceData, onUpdate }) => {
               )}
             </div>
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700">Upload Image:</label>
+              <label className="block text-sm font-medium text-gray-700">
+                Upload Image:
+              </label>
               <input
                 type="file"
                 accept="image/*"
@@ -140,19 +196,21 @@ const UpdateService = ({ isOpen, onClose, serviceData, onUpdate }) => {
             </div>
           </div>
 
+          {/* Buttons */}
           <div className="flex justify-end gap-2 mt-4">
             <motion.button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-400 cursor-pointer text-white rounded-lg hover:bg-gray-500 transition"
+              className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition"
             >
               Cancel
             </motion.button>
             <motion.button
               type="submit"
-              className="px-4 py-2 cursor-pointer bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+              disabled={isLoading}
             >
-              Update Service
+              {isLoading ? "Updating..." : "Update Profile"}
             </motion.button>
           </div>
         </form>
