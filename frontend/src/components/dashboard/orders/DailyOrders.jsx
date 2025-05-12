@@ -9,16 +9,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-
-// 🧪 Mock orders
-const mockOrders = [
-  { _id: "1", createdAt: "2025-04-01" },
-  { _id: "2", createdAt: "2025-04-01" },
-  { _id: "3", createdAt: "2025-04-02" },
-  { _id: "4", createdAt: "2025-04-03" },
-  { _id: "5", createdAt: "2025-04-03" },
-  { _id: "6", createdAt: "2025-04-03" },
-];
+import { useGetAppointmentsQuery } from "../../../redux/slices/AppointmentApi";
 
 // Format date as MM/DD
 const formatDate = (dateStr) => {
@@ -37,7 +28,20 @@ const getDailyOrdersData = (orders) => {
   return Object.entries(dailyCounts).map(([date, count]) => ({ date, orders: count }));
 };
 
-const DailyOrders = ({ orders = mockOrders }) => {
+const DailyOrders = () => {
+  // Fetch appointments using the getAppointments query
+  const { data: orders, isLoading, isError, error } = useGetAppointmentsQuery();
+
+  // Handle loading state
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // Handle error state
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
+
   const dailyOrdersData = getDailyOrdersData(orders);
 
   return (

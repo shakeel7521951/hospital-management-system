@@ -3,7 +3,6 @@ import Header from "../../components/dashboard/common/Header";
 import StatCard from "../../components/dashboard/common/StatCard";
 import { AlertTriangle, Car, DollarSign, TrendingUp } from "lucide-react";
 import CategoryDistributionChart from "../../components/dashboard/overview/CategoryDistributionChart";
-import SalesTrendChart from "../../components/dashboard/products/SalesTrendChart";
 import ProductsTable from "../../components/dashboard/products/ProductsTable";
 import { useGetDoctorsQuery } from "../../redux/slices/DoctorApi";
 
@@ -38,7 +37,7 @@ const ProductsPage = () => {
 
       <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
         <motion.div
-          className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8"
+          className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8 text-xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -72,7 +71,6 @@ const ProductsPage = () => {
         <ProductsTable services={doctors} />
 
         <div className="grid grid-col-1 lg:grid-cols-2 gap-8 mt-10">
-          <SalesTrendChart />
           <CategoryDistributionChart services={doctors} />
         </div>
       </main>

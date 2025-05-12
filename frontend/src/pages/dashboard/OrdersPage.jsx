@@ -5,45 +5,24 @@ import Header from "../../components/dashboard/common/Header";
 import StatCard from "../../components/dashboard/common/StatCard";
 import DailyOrders from "../../components/dashboard/orders/DailyOrders";
 import OrdersTable from "../../components/dashboard/orders/OrdersTable";
-
-// 🔽 STATIC ORDER DATA
-const mockOrders = [
-  {
-    _id: "1",
-    customerName: "John Doe",
-    orderStatus: "Pending",
-    price: 120,
-    createdAt: "2025-04-01",
-  },
-  {
-    _id: "2",
-    customerName: "Jane Smith",
-    orderStatus: "Fulfilled",
-    price: 320,
-    createdAt: "2025-04-02",
-  },
-  {
-    _id: "3",
-    customerName: "Bob Johnson",
-    orderStatus: "Fulfilled",
-    price: 450,
-    createdAt: "2025-04-03",
-  },
-  {
-    _id: "4",
-    customerName: "Alice Brown",
-    orderStatus: "Pending",
-    price: 90,
-    createdAt: "2025-04-04",
-  },
-];
+import { useGetAppointmentsQuery } from "../../redux/slices/AppointmentApi";
 
 const OrdersPage = () => {
-  const orders = mockOrders;
+  // Fetch appointments using the getAppointments query
+  const { data: orders, isLoading, isError, error } = useGetAppointmentsQuery();
+  // Handle loading state
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // Handle error state
+  if (isError) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <div className="flex-1 relative z-10 overflow-auto">
-      <Header title={"Orders"} />
+      <Header title={"Appointments"} />
 
       <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
         <motion.div
@@ -53,31 +32,32 @@ const OrdersPage = () => {
           transition={{ duration: 1 }}
         >
           <StatCard
-            name="Total Orders"
+            name="Total Appointments"
             icon={ShoppingBag}
-            value={orders.length}
+            value={orders?.length || 0} // Use safe fallback for length
             color="#6366F1"
           />
           <StatCard
-            name="Pending Orders"
+            name="Pending Appointments"
             icon={Clock}
-            value={orders.filter((order) => order.orderStatus === "Pending").length}
+            value={orders?.filter((order) => order.status === "Pending").length || 0}
             color="#F59E0B"
           />
           <StatCard
-            name="Completed Orders"
+            name="Completed Appointments"
             icon={CheckCircle}
-            value={orders.filter((order) => order.orderStatus === "Fulfilled").length}
+            value={orders?.filter((order) => order.status === "Fulfilled").length || 0}
             color="#10B981"
           />
           <StatCard
             name="Total Revenue"
             icon={DollarSign}
-            value={`$${orders.reduce((total, order) => total + (order.price || 0), 0)}`}
+            value={`$${orders?.reduce((total, order) => total + (order.price || 0), 0) || 0}`}
             color="#EF4444"
           />
         </motion.div>
 
+        {/* Orders Table with Data */}
         <OrdersTable orders={orders} />
 
         <div className="grid grid-cols-1 gap-8 mt-8">

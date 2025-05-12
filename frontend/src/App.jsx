@@ -32,7 +32,6 @@ import AdminRoute from "./middleWares/AdminRoute";
 import OverviewPage from "./pages/dashboard/OverviewPage";
 import ProductsPage from "./pages/dashboard/ProductsPage";
 import UsersPage from "./pages/dashboard/UsersPage";
-import SalesPage from "./pages/dashboard/SalesPage";
 import OrdersPage from "./pages/dashboard/OrdersPage";
 import Appointment from "./pages/Appointment";
 // import ScrollToTop from "./components/ScrollToTop";
@@ -103,7 +102,7 @@ const router = createBrowserRouter([
           { path: "/dashboard", element: <OverviewPage /> },
           { path: "/admin-doctors", element: <ProductsPage /> },
           { path: "/users", element: <UsersPage /> },
-          { path: "/sales", element: <SalesPage /> },
+          // { path: "/sales", element: <SalesPage /> },
           { path: "/orders", element: <OrdersPage /> },
         ],
       },

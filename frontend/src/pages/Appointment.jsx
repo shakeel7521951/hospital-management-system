@@ -26,7 +26,7 @@ const Appointment = () => {
     setSubmitError(null);
     try {
       await createAppointment(formData).unwrap();
-      toast("Appointment booked successfully!");
+      toast ("Appointment booked successfully!");
     } catch (err) {
       setSubmitError("Failed to book the appointment. Please try again.");
     }

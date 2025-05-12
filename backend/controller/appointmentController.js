@@ -28,8 +28,7 @@ export const createAppointment = async (req, res) => {
 
 export const getAllAppointments = async (req, res) => {
   try {
-    const appointments = await Appointment.find();
-
+    const appointments = await Appointment.find().populate('doctor','name email speciality');
     if (!appointments) {
       return res.status(404).json({ message: 'No appointments found.' });
     }
@@ -38,5 +37,32 @@ export const getAllAppointments = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error retrieving appointments', error });
+  }
+};
+
+export const updateStatus = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { status } = req.body;
+    if (!status) {
+      return res.status(400).json({ message: "Status is required" });
+    }
+
+    const updatedOrder = await Appointment.findByIdAndUpdate(
+      orderId,
+      { status: status },
+      { new: true }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    res.status(200).json({
+      message: "Order status updated successfully",
+      order: updatedOrder,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Internal server error" });
   }
 };

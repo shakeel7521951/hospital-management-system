@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 
 import Header from "../../components/dashboard/common/Header";
 import StatCard from "../../components/dashboard/common/StatCard";
-import SalesOverviewChart from "../../components/dashboard/overview/SalesOverviewChart";
 import CategoryDistributionChart from "../../components/dashboard/overview/CategoryDistributionChart";
 import SalesChannelChart from "../../components/dashboard/overview/SalesChannelChart";
 
@@ -69,7 +68,6 @@ const OverviewPage = () => {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <SalesOverviewChart />
           <CategoryDistributionChart />
           <SalesChannelChart />
         </div>

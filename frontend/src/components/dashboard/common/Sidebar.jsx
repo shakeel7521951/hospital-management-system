@@ -22,8 +22,7 @@ const SIDEBAR_ITEMS = [
   },
   { name: "Doctors", icon: FaUserDoctor, color: "#8B5CF6", href: "/admin-doctors" },
   { name: "Users", icon: Users, color: "#EC4899", href: "/users" },
-  { name: "Sales", icon: DollarSign, color: "#10B981", href: "/sales" },
-  { name: "Orders", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
+  { name: "Appointments", icon: ShoppingCart, color: "#F59E0B", href: "/orders" },
 ];
 
 const Sidebar = () => {
