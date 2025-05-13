@@ -49,9 +49,9 @@ const ProductsPage = () => {
             color="#6366F1"
           />
           <StatCard
-            name="Top Doctor"
+            name="Most Experience"
             icon={TrendingUp}
-            value={topDoctor?.name || "N/A"}
+            value={topDoctor?.experience || "N/A"}
             color="#10B981"
           />
           <StatCard

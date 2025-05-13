@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useAddDoctorMutation } from "../../../redux/slices/DoctorApi";
 
 const AddProduct = ({ isOpen, onClose, onAdd }) => {
-  const [addDoctor] = useAddDoctorMutation();
+  const [addDoctor,{isLoading}] = useAddDoctorMutation();
 
   const [doctor, setDoctor] = useState({
     name: "",
@@ -13,7 +13,7 @@ const AddProduct = ({ isOpen, onClose, onAdd }) => {
     speciality: "",
     experience: "",
     education: "",
-    availableDays: [], // array of strings
+    availableDays: [],
   });
 
   const [imageFile, setImageFile] = useState(null);
@@ -91,6 +91,16 @@ const AddProduct = ({ isOpen, onClose, onAdd }) => {
   };
 
   const allDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  const specialities = [
+    "Cardiology",
+    "Dermatology",
+    "Neurology",
+    "Orthopedics",
+    "Pediatrics",
+    "Psychiatry",
+    "Radiology",
+    "General Medicine",
+  ];
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -117,7 +127,6 @@ const AddProduct = ({ isOpen, onClose, onAdd }) => {
               { label: "Name", name: "name", type: "text" },
               { label: "Email", name: "email", type: "email" },
               { label: "Phone", name: "phone", type: "text" },
-              { label: "Speciality", name: "speciality", type: "text" },
               { label: "Experience (years)", name: "experience", type: "number" },
               { label: "Education", name: "education", type: "text" },
             ].map((field, idx) => (
@@ -129,13 +138,32 @@ const AddProduct = ({ isOpen, onClose, onAdd }) => {
                   value={doctor[field.name]}
                   onChange={handleChange}
                   className="w-full p-2 border border-gray-300 rounded-lg"
-                  required={["name", "email", "phone", "speciality"].includes(field.name)}
+                  required={["name", "email", "phone"].includes(field.name)}
                 />
               </div>
             ))}
+
+            {/* Speciality Dropdown */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Speciality</label>
+              <select
+                name="speciality"
+                value={doctor.speciality}
+                onChange={handleChange}
+                className="w-full p-2 border border-gray-300 rounded-lg"
+                required
+              >
+                <option value="">Select Speciality</option>
+                {specialities.map((spec) => (
+                  <option key={spec} value={spec}>
+                    {spec}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
-          {/* Available Days (Checkboxes) */}
+          {/* Available Days */}
           <div className="mt-4">
             <label className="block text-sm font-medium text-gray-700 mb-2">Available Days:</label>
             <div className="flex flex-wrap gap-3">
@@ -152,7 +180,7 @@ const AddProduct = ({ isOpen, onClose, onAdd }) => {
             </div>
           </div>
 
-          {/* Image Upload Section */}
+          {/* Image Upload */}
           <div className="flex items-center gap-4 mt-4">
             <div className="w-32 h-32 border border-gray-300 rounded-lg overflow-hidden">
               {imagePreview ? (
@@ -172,7 +200,7 @@ const AddProduct = ({ isOpen, onClose, onAdd }) => {
             </div>
           </div>
 
-          {/* Buttons */}
+          {/* Action Buttons */}
           <div className="flex justify-end gap-2 mt-6">
             <motion.button
               type="button"
@@ -189,7 +217,7 @@ const AddProduct = ({ isOpen, onClose, onAdd }) => {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              Add Doctor
+            {isLoading?'Adding...':"Add Doctore"}
             </motion.button>
           </div>
         </form>
