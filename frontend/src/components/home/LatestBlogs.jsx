@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "../Button";
+import { Link } from "react-router-dom";
 
 const blogPosts = [
   {
@@ -80,7 +81,9 @@ const LatestBlogs = () => {
 
       {/* More News Button */}
       <div className="text-center mt-12">
-       <Button text='Read More' />
+        <Link to="/about">
+          <Button text="Read More" />
+        </Link>
       </div>
     </div>
   );

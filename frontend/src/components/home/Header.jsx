@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import Flickity from "flickity";
 import "flickity/css/flickity.css";
 import Button from "../Button";
+import { Link } from "react-router-dom";
 
 const carouselData = [
   {
@@ -47,7 +48,7 @@ const FlickityCarousel = () => {
   useEffect(() => {
     flickityRef.current = new Flickity(".carousel", {
       cellAlign: "center",
-      contain: true, 
+      contain: true,
       wrapAround: true,
       autoPlay: 3000,
       pageDots: false,
@@ -70,7 +71,9 @@ const FlickityCarousel = () => {
           <div className="bg-[#000000be] bg-opacity-50 p-6 text-white text-center w-full h-full flex flex-col justify-center items-center">
             <h2 className="text-2xl font-semibold mb-2">{item.text}</h2>
             <p className="text-sm mb-4">{item.description}</p>
-            <Button text="Read More" bgHover="black" cutHover="white"/>
+            <Link to="/about">
+              <Button text="Read More" bgHover="black" cutHover="white" />
+            </Link>
           </div>
         </div>
       ))}
