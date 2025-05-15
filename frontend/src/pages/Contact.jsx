@@ -8,6 +8,7 @@ const Contact = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    message: "",
     agree: false,
   });
 
@@ -24,9 +25,23 @@ const Contact = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const form = event.currentTarget;
+
     if (form.checkValidity() === false) {
       event.stopPropagation();
+    } else {
+      alert("Message sent successfully!");
+      // Optionally clear form:
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        message: "",
+        agree: false,
+      });
+      setValidated(false);
     }
+
     setValidated(true);
   };
 
@@ -55,7 +70,7 @@ const Contact = () => {
 
   return (
     <div className="bg-gray-50 py-12">
-      <div className=" mx-auto px-4">
+      <div className="mx-auto px-4">
         {/* Header */}
         <div className="container mx-auto text-center mb-12">
           <h1 className="text-4xl font-bold">
@@ -95,7 +110,7 @@ const Contact = () => {
         </div>
         <div className="bg-white p-8 rounded-lg shadow-md max-w-2xl mx-auto">
           <h4 className="text-2xl font-semibold text-center mb-6">Contact Us</h4>
-          <form noValidate validated={validated} onSubmit={handleSubmit}>
+          <form noValidate validated={validated.toString()} onSubmit={handleSubmit}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
               <div>
                 <label className="block text-gray-700 mb-2">Name</label>
@@ -136,9 +151,7 @@ const Contact = () => {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 mb-2">
-                  Confirm Password
-                </label>
+                <label className="block text-gray-700 mb-2">Confirm Password</label>
                 <input
                   type="password"
                   placeholder="Confirm Password"
@@ -150,6 +163,21 @@ const Contact = () => {
                 />
               </div>
             </div>
+
+            {/* Message Field */}
+            <div className="mb-6">
+              <label className="block text-gray-700 mb-2">Message</label>
+              <textarea
+                name="message"
+                placeholder="Write your message..."
+                value={formData.message}
+                onChange={handleChange}
+                required
+                rows={4}
+                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
+              ></textarea>
+            </div>
+
             <div className="mb-6">
               <label className="flex items-center">
                 <input
@@ -169,9 +197,8 @@ const Contact = () => {
               type="submit"
               className="w-full bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-lg shadow-md hover:from-blue-600 hover:to-purple-700 transition duration-300 text-center"
             >
-              Submit
+              Send Message
             </button>
-       
           </form>
         </div>
 

@@ -34,11 +34,12 @@ import ProductsPage from "./pages/dashboard/ProductsPage";
 import UsersPage from "./pages/dashboard/UsersPage";
 import OrdersPage from "./pages/dashboard/OrdersPage";
 import Appointment from "./pages/Appointment";
-// import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "./ScrollToTop";
 
 const MainLayout = () => {
   return (
     <>
+      <ScrollToTop />
       <Navbar />
       <Outlet />
       <Footer />
@@ -54,7 +55,7 @@ const AdminLayout = () => {
           <div className="absolute inset-0 bg-gradient-to-br bg-white text-blue-700" />
           <div className="absolute inset-0 backdrop-blur-sm" />
         </div>
-        {/* <ScrollToTop /> */}
+        <ScrollToTop />
         <Sidebar />
         <Outlet />
       </div>

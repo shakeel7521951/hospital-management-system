@@ -59,7 +59,7 @@ const LatestBlogs = () => {
                 alt={post.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-black bg-opacity-20 transition-opacity duration-300 hover:bg-opacity-30"></div>
+              <div className="absolute inset-0 bg-opacity-20 transition-opacity duration-300 hover:bg-opacity-30"></div>
             </div>
 
             {/* Content */}
@@ -81,7 +81,7 @@ const LatestBlogs = () => {
 
       {/* More News Button */}
       <div className="text-center mt-12">
-        <Link to="/about">
+        <Link to="/explore">
           <Button text="Read More" />
         </Link>
       </div>
