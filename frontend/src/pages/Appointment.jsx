@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGetDoctorsQuery } from "../redux/slices/DoctorApi";
 import { useCreateAppointmentMutation } from "../redux/slices/AppointmentApi";
 import { toast } from "react-toastify";
@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 const Appointment = () => {
   const location = useLocation();
   const selectedDoctorId = location.state?.doctorId || "";
-
+const navigate = useNavigate();
   const [createAppointment] = useCreateAppointmentMutation();
   const { data, isLoading, error } = useGetDoctorsQuery();
   const doctors = Array.isArray(data) ? data : data?.doctors || [];
@@ -32,6 +32,7 @@ const Appointment = () => {
     try {
       await createAppointment(formData).unwrap();
       toast("Appointment booked successfully!");
+      navigate("/my-appointments")
       setFormData({
         name: "",
         date: "",

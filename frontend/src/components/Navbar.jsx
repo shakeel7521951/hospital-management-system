@@ -88,6 +88,15 @@ const Navbar = () => {
                         Dashboard
                       </Link>
                     )}
+                    {userProfile.role === "User" && (
+                      <Link
+                        to="/my-appointments"
+                        className="block px-4 py-2 hover:bg-gray-100"
+                        onClick={() => setShowDropdown(false)}
+                      >
+                        My Appointments
+                      </Link>
+                    )}
                     <button
                       className="w-full text-left px-4 py-2 hover:bg-gray-100"
                       onClick={handleLogout} // Call logout function on click

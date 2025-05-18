@@ -33,6 +33,14 @@ export const appointmentApi = createApi({
       providesTags: ['Appointment'], 
     }),
 
+    getMYAppointments: builder.query({
+      query: () => ({
+        url: "/my-appointments",
+        method: "GET",
+      }),
+      providesTags: ['Appointment'], 
+    }),
+
     updateStatus: builder.mutation({
       query: ({ orderId, status }) => ({
         url: `/orders/${orderId}/status`,
@@ -45,5 +53,5 @@ export const appointmentApi = createApi({
 });
 
 // Export hooks
-export const { useCreateAppointmentMutation, useGetAppointmentsQuery,useUpdateStatusMutation } =
+export const { useCreateAppointmentMutation, useGetAppointmentsQuery,useUpdateStatusMutation,useGetMYAppointmentsQuery } =
   appointmentApi;

@@ -35,6 +35,7 @@ import UsersPage from "./pages/dashboard/UsersPage";
 import OrdersPage from "./pages/dashboard/OrdersPage";
 import Appointment from "./pages/Appointment";
 import ScrollToTop from "./ScrollToTop";
+import MyAppointments from "./pages/MyAppointments";
 
 const MainLayout = () => {
   return (
@@ -82,7 +83,7 @@ const router = createBrowserRouter([
       { path: "/neurology", element: <Neurology /> },
       { path: "/pediatrics", element: <Pediatrics /> },
       { path: "/dental", element: <Dental /> },
-
+      { path: "/my-appointments", element: <MyAppointments /> },
       { path: "/profile", element: <MyProfile /> },
       { path: "/update-password", element: <UpdatePassword /> },
     ],
