@@ -1,33 +1,115 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 const Button = ({
   text,
-  bgHover = "white",
-  textHover = "black",
-  cutHover = "black",
+  bgColor = "bg-blue-600",
+  hoverBgColor = "hover:bg-blue-700",
+  textColor = "text-white",
+  border = "",
+  icon = null,
+  size = "md",
+  fullWidth = false,
+  shadow = "shadow-md hover:shadow-lg",
+  transition = "transition-all duration-300 ease-in-out",
+  transform = "hover:-translate-y-1",
+  rounded = "rounded-xl",
+  className = "",
+  onClick,
+  type = "button",
+  disabled = false,
 }) => {
-  return (
-    <div>
-      {/* <button
-        className="relative overflow-hidden bg-[#0957DE] w-fit px-20 py-3 cursor-pointer font-semibold text-white transition-all duration-500 group"
-        style={{ clipPath: "polygon(100% 0, 85% 100%, 0 100%, 0 0)" }}
-      >
-        <div
-          className={`absolute top-0 right-2 h-[100%] w-[50px] bg-${cutHover} z-20`}
-          style={{ clipPath: "polygon(100% 0, 45% 100%, 25% 100%, 78% 0)" }}
-        ></div>
-        <span className={`absolute inset-0 bg-${bgHover} w-0 transition-all duration-500 group-hover:w-full z-10`}></span>
-        <span className={`relative z-30 ms-[-30px] group-hover:text-${textHover}`}>{text}</span>
-      </button> */}
+  const sizeClasses = {
+    sm: "px-4 py-2 text-sm",
+    md: "px-6 py-3 text-base",
+    lg: "px-8 py-4 text-lg",
+    xl: "px-10 py-5 text-xl",
+  };
 
-      <button
-        type="button"
-        class="text-white bg-gradient-to-r py-3 from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 text-center me-2 mb-2 cursor-pointer"
-      >
+  const disabledClasses = disabled ? "opacity-70 cursor-not-allowed" : "";
+
+  return (
+    <button
+      type={type}
+      onClick={onClick}
+      disabled={disabled}
+      className={`
+        ${sizeClasses[size]}
+        ${bgColor}
+        ${textColor}
+        ${border}
+        ${shadow}
+        ${transition}
+        ${transform}
+        ${rounded}
+        ${hoverBgColor}
+        ${fullWidth ? "w-full" : ""}
+        ${disabledClasses}
+        font-semibold
+        flex items-center justify-center
+        gap-3
+        relative
+        overflow-hidden
+        group
+        ${className}
+      `}
+    >
+      {/* Button content with optional icon */}
+      <span className="relative z-10 flex items-center">
+        {icon && <span className="mr-2">{icon}</span>}
         {text}
-      </button>
-    </div>
+      </span>
+      
+      {/* Animated background effect */}
+      {!disabled && (
+        <>
+          <span className="
+            absolute inset-0 
+            bg-gradient-to-r from-white/10 via-white/5 to-transparent 
+            opacity-0 group-hover:opacity-100
+            transition-opacity duration-500
+          "></span>
+          
+          {/* Ripple effect */}
+          <span className="absolute inset-0 overflow-hidden">
+            <span className="
+              absolute
+              block
+              w-10 h-10
+              bg-white/20
+              rounded-full
+              opacity-0
+              group-active:opacity-100
+              group-active:scale-[10]
+              transition-all
+              duration-700
+              ease-out
+              -translate-x-1/2 -translate-y-1/2
+            "></span>
+          </span>
+        </>
+      )}
+    </button>
   );
+};
+
+Button.propTypes = {
+  text: PropTypes.string.isRequired,
+  bgColor: PropTypes.string,
+  hoverBgColor: PropTypes.string,
+  textColor: PropTypes.string,
+  border: PropTypes.string,
+  icon: PropTypes.node,
+  size: PropTypes.oneOf(["sm", "md", "lg", "xl"]),
+  fullWidth: PropTypes.bool,
+  shadow: PropTypes.string,
+  transition: PropTypes.string,
+  transform: PropTypes.string,
+  rounded: PropTypes.string,
+  className: PropTypes.string,
+  onClick: PropTypes.func,
+  type: PropTypes.oneOf(["button", "submit", "reset"]),
+  disabled: PropTypes.bool,
 };
 
 export default Button;

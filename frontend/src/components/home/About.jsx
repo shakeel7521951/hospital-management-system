@@ -3,7 +3,6 @@ import { FaMoneyBills } from "react-icons/fa6";
 import { PiShoppingBagOpenFill } from "react-icons/pi";
 import { ImBullhorn } from "react-icons/im";
 import { GrUserManager } from "react-icons/gr";
-// import Portfolio from "./Portfolio";
 
 const About = () => {
   return (

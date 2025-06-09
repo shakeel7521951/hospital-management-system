@@ -1,123 +1,202 @@
 import React, { useState } from "react";
-import { FaSearchPlus, FaLink } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { FaSearchPlus, FaLink, FaHospital } from "react-icons/fa";
+import { useInView } from "react-intersection-observer";
 
 const categories = ["All", "Medicine", "Emergency", "ICU", "Oncology"];
 const galleryItems = [
   {
     id: 1,
     category: "Medicine",
-    image:
-      "https://img.freepik.com/free-photo/stethoscope-pills-tomograms_23-2147796507.jpg?uid=R189609995&ga=GA1.1.1481950669.1740815275&semt=ais_hybrid",
+    image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     title: "General Medicine Ward",
+    description: "Comprehensive care for adult patients with acute and chronic conditions"
   },
   {
     id: 2,
     category: "Emergency",
-    image:
-      "https://img.freepik.com/free-photo/team-doctors-walking-row_107420-84770.jpg?uid=R189609995&ga=GA1.1.1481950669.1740815275&semt=ais_hybrid",
-    title: "Rehabilitation Ward",
+    image: "https://images.unsplash.com/photo-1581595219315-a187dd40c322?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    title: "Emergency Department",
+    description: "24/7 emergency care with rapid response teams"
   },
   {
     id: 3,
     category: "ICU",
-    image:
-      "https://img.freepik.com/free-photo/doctor-with-face-mask-against-covid19-discussing-with-nurse-hospital-waiting-area-disabled-senior-woman-wheelchair-waiting-examination-assistant-working-reception-computer_482257-6055.jpg?uid=R189609995&ga=GA1.1.1481950669.1740815275&semt=ais_hybrid",
-    title: "Burn Unit",
+    image: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    title: "Intensive Care Unit",
+    description: "Specialized critical care with advanced monitoring"
   },
   {
     id: 4,
     category: "Emergency",
-    image:
-      "https://img.freepik.com/free-photo/doctor-asking-nurse-pills-consultation-medical-office-physician-specialist-medicine-providing-health-care-services-consultation-diagnostic-examination-treatment-hospital-cabinet_482257-14532.jpg?t=st=1740824921~exp=1740828521~hmac=b8571b29eb1e7112990d2121b8e96d7b1eaf50d4b093111e9d2e9bb4365eb564&w=1380",
+    image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
     title: "Surgical Ward",
+    description: "Pre- and post-operative care for surgical patients"
   },
   {
     id: 5,
     category: "Oncology",
-    image:
-      "https://img.freepik.com/premium-photo/business-colleagues-working-office_1048944-25961619.jpg?uid=R189609995&ga=GA1.1.1481950669.1740815275&semt=ais_hybrid",
-    title: "Pediatric Ward",
+    image: "https://images.unsplash.com/photo-1579154343071-2d8d0f57b9c9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2073&q=80",
+    title: "Oncology Center",
+    description: "Comprehensive cancer diagnosis and treatment"
   },
   {
     id: 6,
     category: "Emergency",
-    image:
-      "https://img.freepik.com/free-photo/cheerful-group-medics-reading-papers_23-2147763840.jpg?uid=R189609995&ga=GA1.1.1481950669.1740815275&semt=ais_hybrid",
-    title: "General Medicine Ward",
+    image: "https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    title: "Pediatric Emergency",
+    description: "Specialized emergency care for children"
   },
   {
     id: 7,
     category: "Medicine",
-    image:
-      "https://img.freepik.com/free-photo/retired-person-using-wheelchair-talking-with-senior-doctor-appointment-while-being-helped-by-professional-nurse-private-clinic-older-man-living-with-disability-busy-hospital-reception_482257-46754.jpg?uid=R189609995&ga=GA1.1.1481950669.1740815275&semt=ais_hybrid",
-    title: "Neurology Ward",
+    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    title: "Neurology Department",
+    description: "Specialized care for neurological disorders"
   },
   {
     id: 8,
     category: "Oncology",
-    image:
-      "https://img.freepik.com/premium-photo/dentist-showing-dentures-toothbrush-by-colleague-holding-file-table_1048944-24147780.jpg?uid=R189609995&ga=GA1.1.1481950669.1740815275&semt=ais_hybrid",
-    title: "Dentist",
+    image: "https://images.unsplash.com/photo-1588776814546-1ffcf47267a5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    title: "Radiation Therapy",
+    description: "Advanced radiation treatment facilities"
   },
   {
     id: 9,
     category: "ICU",
-    image:
-      "https://img.freepik.com/free-photo/occupation-science-digitally-generated-folder-chemistry_1134-676.jpg?uid=R189609995&ga=GA1.1.1481950669.1740815275&semt=ais_hybrid",
-    title: "Maternity Ward",
+    image: "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    title: "Neonatal ICU",
+    description: "Specialized care for newborns and premature infants"
   },
 ];
 
+const GalleryItem = ({ item, index }) => {
+  const [hover, setHover] = useState(false);
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  return (
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="relative overflow-hidden rounded-xl shadow-lg"
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <motion.img
+        src={item.image}
+        alt={item.title}
+        className="w-full h-64 object-cover"
+        initial={{ scale: 1 }}
+        animate={hover ? { scale: 1.05 } : { scale: 1 }}
+        transition={{ duration: 0.4 }}
+      />
+      
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex flex-col justify-end p-6"
+        initial={{ opacity: 0 }}
+        animate={hover ? { opacity: 1 } : { opacity: 0.8 }}
+        transition={{ duration: 0.3 }}
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <FaHospital className="text-blue-400" />
+          <span className="text-sm font-medium text-blue-400">{item.category}</span>
+        </div>
+        
+        <h3 className="text-xl font-bold text-white mb-2">{item.title}</h3>
+        <p className="text-gray-200 text-sm mb-4">{item.description}</p>
+        
+        <motion.div
+          className="flex gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={hover ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ duration: 0.3 }}
+        >
+          <button className="bg-white/10 backdrop-blur-sm text-white p-2 rounded-full hover:bg-blue-600 transition-colors">
+            <FaSearchPlus className="text-lg" />
+          </button>
+          <button className="bg-white/10 backdrop-blur-sm text-white p-2 rounded-full hover:bg-blue-600 transition-colors">
+            <FaLink className="text-lg" />
+          </button>
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const Gallery = () => {
   const [activeCategory, setActiveCategory] = useState("All");
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
 
-  const filteredItems =
-    activeCategory === "All"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === activeCategory);
+  const filteredItems = activeCategory === "All" 
+    ? galleryItems 
+    : galleryItems.filter(item => item.category === activeCategory);
 
   return (
-    <div className="container mx-auto p-4 overflow-x-hidden">
-      <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Main Wards</h1>
-
-      {/* Category Buttons */}
-      <div className="flex flex-wrap justify-center gap-2 mb-6">
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            className={`px-4 py-2 cursor-pointer rounded-lg transition-all text-sm font-medium border border-gray-300 ${
-              activeCategory === cat
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 hover:bg-blue-500 hover:text-white"
-            }`}
-            onClick={() => setActiveCategory(cat)}
+    <section className="py-20 bg-gray-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0, y: 30 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <motion.span 
+            className="inline-block px-4 py-1 text-sm font-semibold text-blue-600 bg-blue-100 rounded-full mb-4"
+            initial={{ opacity: 0 }}
+            animate={inView ? { opacity: 1 } : {}}
+            transition={{ delay: 0.2 }}
           >
-            {cat}
-          </button>
-        ))}
-      </div>
+            HOSPITAL FACILITIES
+          </motion.span>
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Our <span className="text-blue-600">Medical</span> Departments
+          </h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+            State-of-the-art facilities equipped with advanced technology for comprehensive patient care.
+          </p>
+        </motion.div>
 
-      {/* Grid Layout */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {filteredItems.map((item) => (
-          <div key={item.id} className="relative group overflow-hidden rounded-lg shadow-lg">
-            <img
-              src={item.image}
-              alt={item.title}
-              className="w-full h-auto max-w-full object-cover group-hover:opacity-75 transition-all duration-300"
-            />
-            <div className="absolute inset-0 bg-[#000000ac] bg-opacity-50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center transition-all duration-300">
-              <h5 className="text-white text-lg font-semibold mb-2">{item.title}</h5>
-              <div className="flex space-x-4">
-                <FaSearchPlus className="text-white text-2xl cursor-pointer hover:text-blue-300" title="View Larger" />
-                <FaLink className="text-white text-2xl cursor-pointer hover:text-blue-300" title="More Details" />
-              </div>
-            </div>
-          </div>
-        ))}
+        {/* Category Filter */}
+        <motion.div
+          className="flex flex-wrap justify-center gap-3 mb-12"
+          initial={{ opacity: 0 }}
+          animate={inView ? { opacity: 1 } : {}}
+          transition={{ delay: 0.4 }}
+        >
+          {categories.map((cat) => (
+            <motion.button
+              key={cat}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-colors ${
+                activeCategory === cat
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "bg-white text-gray-700 hover:bg-gray-100 shadow-sm"
+              }`}
+              onClick={() => setActiveCategory(cat)}
+            >
+              {cat}
+            </motion.button>
+          ))}
+        </motion.div>
+
+        {/* Gallery Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredItems.map((item, index) => (
+            <GalleryItem key={item.id} item={item} index={index} />
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 

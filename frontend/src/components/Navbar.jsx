@@ -29,6 +29,8 @@ const Navbar = () => {
     }
   };
 
+  console.log("User Profile:", userProfile); // Debugging log
+
   return (
     <div className="mb-20">
       <nav className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
@@ -42,20 +44,22 @@ const Navbar = () => {
             />
           </Link>
 
-          {/* Centered Navigation */}
+          {/* Center Navigation */}
           <div className="hidden md:flex flex-1 justify-center items-center space-x-6 text-lg">
-            {["Home", "About", "Doctors", "Explore", "Contact Us"].map((item, index) => (
-              <Link
-                key={index}
-                to={`/${item.toLowerCase().replace(" ", "-")}`}
-                className="relative hover:text-blue-600 after:content-[''] after:absolute after:w-0 after:h-[2px] after:bg-blue-600 after:bottom-0 after:left-1/2 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0"
-              >
-                {item}
-              </Link>
-            ))}
+            {["Home", "About", "Doctors", "Explore", "Contact Us"].map(
+              (item, index) => (
+                <Link
+                  key={index}
+                  to={`/${item.toLowerCase().replace(" ", "-")}`}
+                  className="relative hover:text-blue-600 after:content-[''] after:absolute after:w-0 after:h-[2px] after:bg-blue-600 after:bottom-0 after:left-1/2 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0"
+                >
+                  {item}
+                </Link>
+              )
+            )}
           </div>
 
-          {/* Right Side Auth / Profile */}
+          {/* Right Side Auth/Profile */}
           <div className="hidden md:flex items-center gap-4 relative">
             {userProfile ? (
               <>
@@ -71,7 +75,7 @@ const Navbar = () => {
 
                 {/* Dropdown */}
                 {showDropdown && (
-                  <div className="absolute right-0 top-12 bg-white shadow-lg border rounded-md py-2 z-50 min-w-[160px]">
+                  <div className="absolute right-0 top-12 bg-white shadow-lg border rounded-md py-2 z-50 min-w-[180px]">
                     <Link
                       to="/profile"
                       className="block px-4 py-2 hover:bg-gray-100"
@@ -79,7 +83,7 @@ const Navbar = () => {
                     >
                       My Profile
                     </Link>
-                    {userProfile.role === "Admin" && (
+                    {userProfile?.role === "Admin" && (
                       <Link
                         to="/dashboard"
                         className="block px-4 py-2 hover:bg-gray-100"
@@ -88,18 +92,16 @@ const Navbar = () => {
                         Dashboard
                       </Link>
                     )}
-                    {userProfile.role === "User" && (
-                      <Link
-                        to="/my-appointments"
-                        className="block px-4 py-2 hover:bg-gray-100"
-                        onClick={() => setShowDropdown(false)}
-                      >
-                        My Appointments
-                      </Link>
-                    )}
+                    <Link
+                      to="/my-reservations"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setShowDropdown(false)}
+                    >
+                      My Reservations
+                    </Link>
                     <button
                       className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                      onClick={handleLogout} // Call logout function on click
+                      onClick={handleLogout}
                     >
                       Logout
                     </button>
@@ -127,27 +129,44 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="fixed top-14 left-0 w-64 h-full bg-white shadow-lg z-50 p-5 md:hidden flex flex-col items-center">
-          {["Home", "About", "Doctors", "Explore", "Contact Us"].map((item, index) => (
-            <Link
-              key={index}
-              to={`/${item.toLowerCase().replace(" ", "-")}`}
-              className="relative text-xl text-center block py-2 hover:text-blue-600 after:content-[''] after:absolute after:w-0 after:h-[2px] after:bg-blue-600 after:bottom-0 after:left-1/2 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0"
-              onClick={() => setIsOpen(false)}
-            >
-              {item}
-            </Link>
-          ))}
+        <div className="fixed top-14 left-0 w-64 h-full bg-white shadow-lg z-[999] p-5 md:hidden flex flex-col items-center">
+          {["Home", "About", "Doctors", "Explore", "Contact Us"].map(
+            (item, index) => (
+              <Link
+                key={index}
+                to={`/${item.toLowerCase().replace(" ", "-")}`}
+                className="relative text-xl text-center block py-2 hover:text-blue-600 after:content-[''] after:absolute after:w-0 after:h-[2px] after:bg-blue-600 after:bottom-0 after:left-1/2 after:transition-all after:duration-300 hover:after:w-full hover:after:left-0"
+                onClick={() => setIsOpen(false)}
+              >
+                {item}
+              </Link>
+            )
+          )}
 
           <div className="mt-5">
             {userProfile ? (
               <>
-                <Link to="/appointment">
+                <Link to="/appointments" onClick={() => setIsOpen(false)}>
                   <Button text="Make an Appointment" />
                 </Link>
+                <Link to="/profile" onClick={() => setIsOpen(false)}>
+                  <Button text="My Profile" />
+                </Link>
+                <Link to="/my-reservations" onClick={() => setIsOpen(false)}>
+                  <Button text="My Reservations" />
+                </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsOpen(false);
+                  }}
+                  className="mt-2 text-sm text-red-500"
+                >
+                  Logout
+                </button>
               </>
             ) : (
-              <div className="flex mt-3 gap-2">
+              <div className="flex flex-col mt-3 gap-2">
                 <Link to="/login">
                   <Button text="Login" />
                 </Link>
