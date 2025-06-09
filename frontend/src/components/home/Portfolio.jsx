@@ -152,7 +152,7 @@ const Portfolio = () => {
           transition={{ delay: 0.8 }}
           className="text-center mt-16"
         >
-          <Link to="/services">
+          <Link to="/doctors">
             <Button
               text="View All Services"
               bgColor="bg-white"

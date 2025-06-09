@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { FaSearch } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaSearch, FaCalendarAlt, FaGraduationCap, FaBriefcase } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useGetDoctorsQuery } from "../redux/slices/DoctorApi";
 
@@ -7,28 +8,32 @@ const Doctors = () => {
   const navigate = useNavigate();
   const { data, isLoading, isError } = useGetDoctorsQuery();
   const doctors = data?.doctors || [];
-  console.log(doctors);
 
   const specialists = [
     {
       name: "Dentist",
       img: "https://cdn-icons-png.freepik.com/512/12604/12604692.png",
+      icon: "🦷"
     },
     {
-      name: "Heart Specialist",
+      name: "Cardiologist",
       img: "https://cdn-icons-png.freepik.com/256/8679/8679678.png",
+      icon: "❤️"
     },
     {
       name: "Orthopedic",
       img: "https://cdn-icons-png.freepik.com/256/9169/9169833.png",
+      icon: "🦴"
     },
     {
       name: "Neurologist",
       img: "https://cdn-icons-png.freepik.com/256/7277/7277132.png",
+      icon: "🧠"
     },
     {
-      name: "Otology",
+      name: "ENT Specialist",
       img: "https://cdn-icons-png.freepik.com/256/13077/13077490.png",
+      icon: "👂"
     },
   ];
 
@@ -42,44 +47,73 @@ const Doctors = () => {
   );
 
   return (
-    <div>
-      {/* Search Section */}
-      <div className="flex flex-col items-center text-center py-12 px-6">
-        <h1 className="text-4xl font-extrabold text-blue-600 mb-3">
-          Search <span className="text-gray-900">Doctors</span>
-        </h1>
-        <p className="text-gray-600 text-lg mb-6">
-          Find your doctor and book an appointment in one click
-        </p>
-
-        <form className="flex w-full max-w-lg bg-white shadow-lg rounded-full overflow-hidden border border-gray-300">
-          <input
-            className="w-full px-5 py-3 text-gray-700 outline-none"
-            type="search"
-            placeholder="Find Doctors Here..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button
-            type="submit"
-            className="bg-blue-600 text-white px-6 flex items-center justify-center hover:bg-blue-700"
+    <div className="bg-gray-50">
+      {/* Hero Search Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-blue-800 py-16 px-6 text-white">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-4xl mx-auto text-center"
+        >
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            Find Your <span className="text-blue-200">Trusted</span> Doctor
+          </h1>
+          <p className="text-xl text-blue-100 mb-8">
+            Book appointments with top specialists in just a few clicks
+          </p>
+          
+          <motion.div 
+            whileHover={{ scale: 1.01 }}
+            className="flex w-full max-w-2xl mx-auto bg-white rounded-lg overflow-hidden shadow-xl"
           >
-            <FaSearch className="text-lg" />
-          </button>
-        </form>
+            <input
+              className="w-full px-6 py-4 text-gray-800 outline-none"
+              type="search"
+              placeholder="Search doctors by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <button
+              type="submit"
+              className="bg-blue-700 text-white px-8 flex items-center justify-center hover:bg-blue-800 transition-colors"
+            >
+              <FaSearch className="text-xl" />
+            </button>
+          </motion.div>
+        </motion.div>
       </div>
 
-      {/* Specialist Section */}
-      <div className="container mx-auto py-12 px-6">
-        <h2 className="text-4xl font-extrabold text-center text-blue-600 mb-12">
-          Find Your Specialist
-        </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 place-items-center">
+      {/* Specialist Categories */}
+      <div className="container mx-auto py-16 px-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            Browse by <span className="text-blue-600">Specialty</span>
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Select a specialty to find the right doctor for your needs
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {specialists.map((specialist, index) => (
-            <div
+            <motion.div
               key={index}
-              className={`flex flex-col items-center bg-white p-6 rounded-xl shadow-md hover:shadow-xl transform transition-all duration-300 hover:scale-105 cursor-pointer border border-gray-300 w-44 h-44 ${
-                selectedSpecialty === specialist.name ? "bg-blue-100" : ""
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -5 }}
+              className={`flex flex-col items-center bg-white p-6 rounded-xl shadow-md hover:shadow-lg cursor-pointer border-2 transition-all ${
+                selectedSpecialty === specialist.name 
+                  ? "border-blue-500 bg-blue-50" 
+                  : "border-transparent hover:border-blue-200"
               }`}
               onClick={() =>
                 setSelectedSpecialty(
@@ -87,89 +121,147 @@ const Doctors = () => {
                 )
               }
             >
-              <img
-                src={specialist.img}
-                alt={specialist.name}
-                className="w-20 h-20 object-contain mb-3"
-              />
-              <h6 className="text-md font-semibold text-gray-800 text-center">
+              <div className="text-4xl mb-3">{specialist.icon}</div>
+              <h6 className="text-lg font-semibold text-gray-800 text-center">
                 {specialist.name}
               </h6>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
 
       {/* Doctors List */}
-      <div className="py-12 px-6 bg-gray-50">
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gray-800">
-            Meet Our <span className="text-blue-600">Specialists</span>
-          </h1>
-          <p className="text-gray-600 text-lg mt-3">
-            Highly skilled professionals ready to help you
+      <div className="container mx-auto py-16 px-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            Our <span className="text-blue-600">Medical</span> Experts
+          </h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Highly qualified professionals dedicated to your health
           </p>
-        </div>
+        </motion.div>
 
         {isLoading ? (
-          <p className="text-center text-blue-500">Loading doctors...</p>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center"
+          >
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+            <p className="text-blue-600">Loading our specialists...</p>
+          </motion.div>
         ) : isError ? (
-          <p className="text-center text-red-500">Failed to load doctors.</p>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center text-red-500"
+          >
+            Failed to load doctors. Please try again later.
+          </motion.p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+          <AnimatePresence>
             {filteredDoctors.length > 0 ? (
-              filteredDoctors.map((doctor, index) => (
-                <div
-                  key={index}
-                  className="bg-white border border-gray-200 shadow-md rounded-xl p-4 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                >
-                  <div className="relative">
-                    <img
-                      src={doctor.doctorImage}
-                      alt={doctor.name}
-                      className="w-full h-56 object-cover rounded-lg"
-                    />
-                  </div>
-                  <h4 className="text-xl font-semibold text-gray-800 mt-4">
-                    {doctor.name}
-                  </h4>
-                  <p className="text-blue-600 font-medium mb-1">
-                    {doctor.speciality}
-                  </p>
-                  {doctor.experience > 0 && (
-                    <p className="text-sm text-gray-700">
-                      💼 {doctor.experience}{" "}
-                      {doctor.experience === 1 ? "year" : "years"} of experience
-                    </p>
-                  )}
-                  {doctor.education && (
-                    <p className="text-sm text-gray-700">
-                      🎓 {doctor.education}
-                    </p>
-                  )}
-                  {doctor.availableDays?.length > 0 && (
-                    <p className="text-sm text-gray-700">
-                      🗓️ Available: {doctor.availableDays.join(", ")}
-                    </p>
-                  )}
-                  <button
-                    onClick={() =>
-                      navigate("/appointments", {
-                        state: { doctorId: doctor._id }, // Pass selected doctor ID here
-                      })
-                    }
-                    className="mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                {filteredDoctors.map((doctor, index) => (
+                  <motion.div
+                    key={doctor._id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
+                    whileHover={{ y: -5 }}
+                    className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all"
                   >
-                    Book Appointment
-                  </button>
-                </div>
-              ))
+                    <div className="relative h-64 overflow-hidden">
+                      <motion.img
+                        src={doctor.doctorImage}
+                        alt={doctor.name}
+                        className="w-full h-full object-cover"
+                        initial={{ scale: 1 }}
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.4 }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    </div>
+
+                    <div className="p-6">
+                      <h3 className="text-xl font-bold text-gray-800 mb-1">
+                        {doctor.name}
+                      </h3>
+                      <p className="text-blue-600 font-medium mb-4">
+                        {doctor.speciality}
+                      </p>
+
+                      <div className="space-y-3 text-gray-600">
+                        {doctor.experience > 0 && (
+                          <div className="flex items-center gap-2">
+                            <FaBriefcase className="text-blue-500" />
+                            <span>
+                              {doctor.experience} {doctor.experience === 1 ? "year" : "years"} experience
+                            </span>
+                          </div>
+                        )}
+                        {doctor.education && (
+                          <div className="flex items-center gap-2">
+                            <FaGraduationCap className="text-blue-500" />
+                            <span>{doctor.education}</span>
+                          </div>
+                        )}
+                        {doctor.availableDays?.length > 0 && (
+                          <div className="flex items-center gap-2">
+                            <FaCalendarAlt className="text-blue-500" />
+                            <span>Available: {doctor.availableDays.join(", ")}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        onClick={() =>
+                          navigate("/appointments", {
+                            state: { doctorId: doctor._id },
+                          })
+                        }
+                        className="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-lg font-medium transition-colors"
+                      >
+                        Book Appointment
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             ) : (
-              <p className="text-center text-gray-600 col-span-4">
-                No doctors found.
-              </p>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-center py-12"
+              >
+                <div className="text-6xl mb-4">👨‍⚕️</div>
+                <h3 className="text-2xl font-medium text-gray-700 mb-2">
+                  No doctors found
+                </h3>
+                <p className="text-gray-500">
+                  Try adjusting your search or filter criteria
+                </p>
+                <button
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedSpecialty("");
+                  }}
+                  className="mt-4 text-blue-600 hover:text-blue-800 font-medium"
+                >
+                  Clear filters
+                </button>
+              </motion.div>
             )}
-          </div>
+          </AnimatePresence>
         )}
       </div>
     </div>
