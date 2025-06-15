@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 const Appointment = () => {
   const location = useLocation();
   const selectedDoctorId = location.state?.doctorId || "";
-const navigate = useNavigate();
+  const navigate = useNavigate();
   const [createAppointment] = useCreateAppointmentMutation();
   const { data, isLoading, error } = useGetDoctorsQuery();
   const doctors = Array.isArray(data) ? data : data?.doctors || [];
@@ -32,7 +32,7 @@ const navigate = useNavigate();
     try {
       await createAppointment(formData).unwrap();
       toast("Appointment booked successfully!");
-      navigate("/my-appointments")
+      navigate("/my-appointments");
       setFormData({
         name: "",
         date: "",
@@ -56,9 +56,15 @@ const navigate = useNavigate();
 
         {selectedDoctor && (
           <div className="mb-4 p-4 border rounded-md bg-blue-50">
-            <h3 className="text-xl font-semibold text-blue-800">{selectedDoctor.name}</h3>
-            <p className="text-gray-700">Speciality: {selectedDoctor.speciality}</p>
-            <p className="text-gray-700">Experience: {selectedDoctor.experience} years</p>
+            <h3 className="text-xl font-semibold text-blue-800">
+              {selectedDoctor.name}
+            </h3>
+            <p className="text-gray-700">
+              Speciality: {selectedDoctor.speciality}
+            </p>
+            <p className="text-gray-700">
+              Experience: {selectedDoctor.experience} years
+            </p>
           </div>
         )}
 
@@ -138,15 +144,18 @@ const navigate = useNavigate();
             />
           </div>
 
-          {submitError && (
-            <p className="text-red-500 text-sm">{submitError}</p>
-          )}
+          {submitError && <p className="text-red-500 text-sm">{submitError}</p>}
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition cursor-pointer"
+            disabled={isLoading}
+            className={`w-full bg-blue-600 text-white py-2 rounded-md transition ${
+              isLoading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "hover:bg-blue-700 cursor-pointer"
+            }`}
           >
-            Book Appointment
+            {isLoading ? "Booking..." : "Book Appointment"}
           </button>
         </form>
       </div>

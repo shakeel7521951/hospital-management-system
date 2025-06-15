@@ -86,6 +86,7 @@ const router = createBrowserRouter([
       { path: "/my-appointments", element: <MyAppointments /> },
       { path: "/profile", element: <MyProfile /> },
       { path: "/update-password", element: <UpdatePassword /> },
+      { path: "/appointments", element: <Appointment /> },
     ],
   },
   { path: "/login", element: <LoginForm /> },
@@ -93,7 +94,6 @@ const router = createBrowserRouter([
   { path: "/user-verification", element: <VerifyUser /> },
   { path: "/forgot-passoword", element: <ForgotPassword /> },
   { path: "/reset-password", element: <ResetPassword /> },
-  { path: "/appointments", element: <Appointment /> },
 
   {
     element: <AdminRoute />,
