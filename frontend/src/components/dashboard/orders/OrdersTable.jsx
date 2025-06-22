@@ -84,7 +84,6 @@ const OrdersTable = () => {
                 "Name",
                 "Email",
                 "Doctor Name",
-                "Reason",
                 "Date",
                 "Status",
                 "Time",
@@ -117,9 +116,6 @@ const OrdersTable = () => {
                 </td>
                 <td className="px-6 py-4 text-sm text-black">
                   {order.doctor?.name || "N/A"}
-                </td>
-                <td className="px-6 py-4 text-sm text-black">
-                  {order.reason || "N/A"}
                 </td>
                 <td className="px-6 py-4 text-sm text-blue-700">
                   {new Date(order.date).toLocaleDateString()}
