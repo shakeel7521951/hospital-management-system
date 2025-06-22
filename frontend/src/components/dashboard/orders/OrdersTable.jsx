@@ -108,25 +108,25 @@ const OrdersTable = () => {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
               >
-                <td className="px-6 py-4 text-sm text-black">
+                <td className="px-6 py-4 text-sm text-black text-nowrap">
                   {order.name || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-sm text-black">
+                <td className="px-6 py-4 text-sm text-black text-nowrap">
                   {order.email || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-sm text-black">
+                <td className="px-6 py-4 text-sm text-black text-nowrap" >
                   {order.doctor?.name || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-sm text-blue-700">
+                <td className="px-6 py-4 text-sm text-blue-700 text-nowrap">
                   {new Date(order.date).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 text-sm text-black">
                   {order.status || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-sm text-blue-700">
+                <td className="px-6 py-4 text-sm text-blue-700 text-nowrap">
                   {order.time || "N/A"}
                 </td>
-                <td className="px-6 py-4 text-sm text-blue-700">
+                <td className="px-6 py-4 text-sm text-blue-700 text-nowrap">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </td>
                 <td className="px-6 py-4 text-sm text-blue-700">
