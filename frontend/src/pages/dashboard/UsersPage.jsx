@@ -17,10 +17,6 @@ const UsersPage = () => {
     ? data.filter(user => user.createdAt.startsWith(today)).length
     : 0;
 
-  const churnRate = totalUsers > 0
-    ? (((totalUsers - activeUsers) / totalUsers) * 100).toFixed(1) + "%"
-    : "0%";
-
   return (
     <div className="flex-1 overflow-auto relative z-10">
       <Header title="Users" />
@@ -28,7 +24,7 @@ const UsersPage = () => {
       <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
         {/* STATS */}
         <motion.div
-          className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8"
+          className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -50,12 +46,6 @@ const UsersPage = () => {
             icon={UserCheck}
             value={isLoading ? "Loading..." : activeUsers.toLocaleString()}
             color="#F59E0B"
-          />
-          <StatCard
-            name="Churn Rate"
-            icon={UserX}
-            value={isLoading ? "Loading..." : churnRate}
-            color="#EF4444"
           />
         </motion.div>
 

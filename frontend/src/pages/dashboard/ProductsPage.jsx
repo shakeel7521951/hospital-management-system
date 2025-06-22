@@ -70,7 +70,7 @@ const ProductsPage = () => {
 
         <ProductsTable services={doctors} />
 
-        <div className="grid grid-col-1 lg:grid-cols-2 gap-8 mt-10">
+        <div className="grid grid-col-1 lg:grid-cols-1 gap-8 mt-10">
           <CategoryDistributionChart services={doctors} />
         </div>
       </main>

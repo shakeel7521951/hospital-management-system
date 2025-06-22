@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import Header from "../../components/dashboard/common/Header";
 import StatCard from "../../components/dashboard/common/StatCard";
 import CategoryDistributionChart from "../../components/dashboard/overview/CategoryDistributionChart";
-import SalesChannelChart from "../../components/dashboard/overview/SalesChannelChart";
 
 import { useGetDoctorsQuery } from "../../redux/slices/DoctorApi";
 import { useAllUsersQuery } from "../../redux/slices/UserApi";
@@ -41,12 +40,11 @@ const OverviewPage = () => {
       <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
         {/* STATS */}
         <motion.div
-          className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8"
+          className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          <StatCard name="Total Sales" icon={Zap} value="$0" color="#6366F1" />
           <StatCard
             name="Total Users"
             icon={Users}
@@ -67,9 +65,8 @@ const OverviewPage = () => {
           />
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
           <CategoryDistributionChart />
-          <SalesChannelChart />
         </div>
       </main>
     </div>

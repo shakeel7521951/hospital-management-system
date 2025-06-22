@@ -104,7 +104,6 @@ const router = createBrowserRouter([
           { path: "/dashboard", element: <OverviewPage /> },
           { path: "/admin-doctors", element: <ProductsPage /> },
           { path: "/users", element: <UsersPage /> },
-          // { path: "/sales", element: <SalesPage /> },
           { path: "/orders", element: <OrdersPage /> },
         ],
       },
